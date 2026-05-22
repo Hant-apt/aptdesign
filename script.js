@@ -63,14 +63,18 @@ function updateSubpages() {
   const showStudio = hash === "#designer";
   const showProjects = hash === "#private-projects" || /^#project-\d+/.test(hash);
   const caseMatch = hash.match(/^#case-(0[1-6])$/);
+  const showCase = Boolean(caseMatch);
   document.body.classList.toggle("show-studio", showStudio);
   document.body.classList.toggle("show-projects", showProjects);
+  document.body.classList.toggle("show-case", showCase);
   document.body.classList.remove("case-01", "case-02", "case-03", "case-04", "case-05", "case-06");
+  if (showStudio || showProjects || showCase) {
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+  }
   if (caseMatch) {
     document.body.classList.add(`case-${caseMatch[1]}`);
-    window.requestAnimationFrame(() => {
-      document.querySelector(hash)?.scrollIntoView({ block: "start" });
-    });
   }
 }
 
