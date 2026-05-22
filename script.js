@@ -1,0 +1,86 @@
+const slides = [...document.querySelectorAll(".slide")];
+const prevButton = document.querySelector(".slide-arrow.prev");
+const nextButton = document.querySelector(".slide-arrow.next");
+const currentLabel = document.querySelector(".current-label");
+const currentHeroTitle = document.querySelector(".current-hero-title");
+const exploreButton = document.querySelector(".outline-button");
+const menuButton = document.querySelector(".menu-button");
+const menuClose = document.querySelector(".menu-close");
+const menuScrim = document.querySelector(".menu-scrim");
+const mobilePanel = document.querySelector(".mobile-panel");
+let active = 0;
+let timer;
+
+function showSlide(index) {
+  active = (index + slides.length) % slides.length;
+  slides.forEach((slide, slideIndex) => {
+    slide.classList.toggle("active", slideIndex === active);
+  });
+  const slide = slides[active];
+  currentLabel.textContent = slide.dataset.label;
+  currentHeroTitle.textContent = slide.dataset.title;
+  exploreButton.setAttribute("href", `#${slide.dataset.target}`);
+}
+
+function setMenuOpen(isOpen) {
+  mobilePanel.classList.toggle("open", isOpen);
+  menuScrim.classList.toggle("open", isOpen);
+  document.body.classList.toggle("menu-open", isOpen);
+  menuButton.setAttribute("aria-expanded", String(isOpen));
+  mobilePanel.setAttribute("aria-hidden", String(!isOpen));
+}
+
+function restartTimer() {
+  window.clearInterval(timer);
+  timer = window.setInterval(() => showSlide(active + 1), 5200);
+}
+
+prevButton.addEventListener("click", () => {
+  showSlide(active - 1);
+  restartTimer();
+});
+
+nextButton.addEventListener("click", () => {
+  showSlide(active + 1);
+  restartTimer();
+});
+
+menuButton.addEventListener("click", () => {
+  setMenuOpen(!mobilePanel.classList.contains("open"));
+});
+
+menuClose.addEventListener("click", () => setMenuOpen(false));
+menuScrim.addEventListener("click", () => setMenuOpen(false));
+
+mobilePanel.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => {
+    setMenuOpen(false);
+  });
+});
+
+function updateSubpages() {
+  const hash = window.location.hash;
+  const showStudio = hash === "#designer";
+  const showProjects = hash === "#private-projects" || /^#project-\d+/.test(hash);
+  const caseMatch = hash.match(/^#case-(0[1-6])$/);
+  document.body.classList.toggle("show-studio", showStudio);
+  document.body.classList.toggle("show-projects", showProjects);
+  document.body.classList.remove("case-01", "case-02", "case-03", "case-04", "case-05", "case-06");
+  if (caseMatch) {
+    document.body.classList.add(`case-${caseMatch[1]}`);
+    window.requestAnimationFrame(() => {
+      document.querySelector(hash)?.scrollIntoView({ block: "start" });
+    });
+  }
+}
+
+document.querySelectorAll("img").forEach((image) => {
+  image.addEventListener("error", () => {
+    image.closest(".slide, .project-card")?.classList.add("image-missing");
+  });
+});
+
+showSlide(0);
+restartTimer();
+updateSubpages();
+window.addEventListener("hashchange", updateSubpages);
