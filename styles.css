@@ -191,7 +191,7 @@ a {
 
 .slide {
   opacity: 0;
-  transition: opacity 900ms ease;
+  transition: opacity 1000ms ease;
 }
 
 .slide.active {
@@ -235,9 +235,50 @@ a {
 
 .hero-line {
   width: min(100%, 520px);
-  height: 1px;
+  height: 8px;
   margin: 18px auto 16px;
-  background: rgba(255, 255, 255, 0.68);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-line::before,
+.hero-line::after {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  content: "";
+  transform: translateY(-50%);
+}
+
+.hero-line::before {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.hero-line::after {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
+}
+
+.hero-line.progress-running::after {
+  animation: heroProgress 5000ms linear forwards;
+}
+
+@keyframes heroProgress {
+  0% {
+    transform: translateY(-50%) scaleX(0);
+  }
+
+  80% {
+    transform: translateY(-50%) scaleX(0.8);
+  }
+
+  100% {
+    transform: translateY(-50%) scaleX(1);
+  }
 }
 
 .hero h1 {

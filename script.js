@@ -4,12 +4,16 @@ const nextButton = document.querySelector(".slide-arrow.next");
 const currentLabel = document.querySelector(".current-label");
 const currentHeroTitle = document.querySelector(".current-hero-title");
 const exploreButton = document.querySelector(".outline-button");
+const heroLine = document.querySelector(".hero-line");
 const menuButton = document.querySelector(".menu-button");
 const menuClose = document.querySelector(".menu-close");
 const menuScrim = document.querySelector(".menu-scrim");
 const mobilePanel = document.querySelector(".mobile-panel");
+const slideDuration = 5000;
+const slideSwitchLead = 1000;
 let active = 0;
-let timer;
+let switchTimer;
+let cycleTimer;
 
 function showSlide(index) {
   active = (index + slides.length) % slides.length;
@@ -30,9 +34,18 @@ function setMenuOpen(isOpen) {
   mobilePanel.setAttribute("aria-hidden", String(!isOpen));
 }
 
+function restartProgress() {
+  heroLine.classList.remove("progress-running");
+  void heroLine.offsetWidth;
+  heroLine.classList.add("progress-running");
+}
+
 function restartTimer() {
-  window.clearInterval(timer);
-  timer = window.setInterval(() => showSlide(active + 1), 5200);
+  window.clearTimeout(switchTimer);
+  window.clearTimeout(cycleTimer);
+  restartProgress();
+  switchTimer = window.setTimeout(() => showSlide(active + 1), slideDuration - slideSwitchLead);
+  cycleTimer = window.setTimeout(restartTimer, slideDuration);
 }
 
 prevButton.addEventListener("click", () => {
@@ -84,7 +97,11 @@ document.querySelectorAll("img").forEach((image) => {
   });
 });
 
-showSlide(0);
-restartTimer();
 updateSubpages();
+showSlide(0);
+if (document.readyState === "complete") {
+  restartTimer();
+} else {
+  window.addEventListener("load", restartTimer, { once: true });
+}
 window.addEventListener("hashchange", updateSubpages);
