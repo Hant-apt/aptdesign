@@ -2,3 +2,6 @@ assets/images/home-*.png
 assets/images/project-*-cover.png
 cf-pages-dist/
 .wrangler/
+release/
+*.zip
+*.tar.gz

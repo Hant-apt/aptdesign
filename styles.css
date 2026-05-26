@@ -141,8 +141,9 @@ a {
 .panel-brand {
   position: absolute;
   top: 188px;
-  right: 84px;
+  left: 50%;
   width: 54px;
+  transform: translateX(-50%);
 }
 
 .panel-brand img {
@@ -152,10 +153,11 @@ a {
 .panel-nav {
   position: absolute;
   top: 330px;
-  right: 72px;
+  left: 50%;
   display: grid;
   width: 172px;
   gap: 34px;
+  transform: translateX(-50%);
   text-align: center;
 }
 
@@ -1034,13 +1036,11 @@ body.case-06 #case-06 {
 
   .panel-brand {
     top: 154px;
-    right: 58px;
     width: 50px;
   }
 
   .panel-nav {
     top: 286px;
-    right: 46px;
     width: 166px;
     gap: 30px;
   }
