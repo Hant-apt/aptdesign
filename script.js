@@ -15,8 +15,24 @@ let active = 0;
 let switchTimer;
 let cycleTimer;
 
+function loadImage(image) {
+  if (!image || image.hasAttribute("src") || !image.dataset.src) return;
+  image.src = image.dataset.src;
+}
+
+function loadImages(container) {
+  container?.querySelectorAll("img[data-src]").forEach(loadImage);
+}
+
+function prepareSlide(index) {
+  const slide = slides[(index + slides.length) % slides.length];
+  loadImages(slide);
+}
+
 function showSlide(index) {
   active = (index + slides.length) % slides.length;
+  prepareSlide(active);
+  prepareSlide(active + 1);
   slides.forEach((slide, slideIndex) => {
     slide.classList.toggle("active", slideIndex === active);
   });
@@ -88,6 +104,7 @@ function updateSubpages() {
   }
   if (caseMatch) {
     document.body.classList.add(`case-${caseMatch[1]}`);
+    loadImages(document.querySelector(`#case-${caseMatch[1]}`));
   }
 }
 
